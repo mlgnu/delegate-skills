@@ -71,6 +71,7 @@ Skip setup when you want one implementer or one-off dials. Pick the skill for a 
 | [`codex-delegate`](skills/codex-delegate/SKILL.md) | [OpenAI Codex](https://github.com/openai/codex) (`codex`) | `--sandbox workspace-write` | `--read-only` | `--resume-last`, `--session <id>` |
 | [`commandcode-delegate`](skills/commandcode-delegate/SKILL.md) | [Command Code](https://commandcode.ai/docs/headless) (`cmd`; `cmdc` on Windows) | `--yolo` — the only headless write state; no sandbox [^commandcode] | `--read-only` (withheld tools + `plan`) | `--continue-last`, `--session <id>` |
 | [`cursor-delegate`](skills/cursor-delegate/SKILL.md) | [Cursor Agent](https://cursor.com/cli) (`cursor-agent`) | `--force`; `--no-force` withholds command approval | `--read-only` (plan mode) | `--resume-last`, `--session <id>` |
+| [`gemini-delegate`](skills/gemini-delegate/SKILL.md) | [Gemini CLI](https://github.com/google-gemini/gemini-cli) (`gemini`) | `--approval-mode auto_edit`; `--sandbox` opt-in | `--read-only` (`--approval-mode plan`) — Git tripwire | `--resume latest`, `--resume <index>` |
 | [`grok-delegate`](skills/grok-delegate/SKILL.md) | Grok Build (`grok`) | workspace-scoped; `--full-access` opt-in | `--read-only` — best-effort [^grok] | `--resume-last`, `--session <id>` |
 | [`kimi-delegate`](skills/kimi-delegate/SKILL.md) | [Kimi Code](https://moonshotai.github.io/kimi-code/en/) (`kimi`) | `auto permission mode`, always | — [^none] | `--resume-last`, `--session <id>` |
 | [`muse-delegate`](skills/muse-delegate/SKILL.md) | Muse Code (`muse`) | `--disable-approval` (sandbox on); not `--yolo` [^muse] | `--read-only` (`--disable-write` + `--disable-shell`) | `--session <id>` (no headless `--resume-last`) |
@@ -297,6 +298,10 @@ Per skill — platform, CLI version, and what the run exercised:
   and usage with no touched files. `--stall-timeout` is contract-tested; the live hang it targets was
   observed on Linux with `cursor-agent` 2026.10.01-e373342 (two runs silent after `thinking`
   `completed`, never exiting).
+- `gemini-delegate` — Windows 11, native, `gemini` 0.64.0 on a Gemini Code Assist license: `--read-only` lane run
+  (lane-applied `readOnly` and `timeout`) returning the assistant answer with `readOnlyViolation` false and
+  no touched files; write run under `auto_edit` fixing one briefed line, uncommitted. Untrusted folders
+  exit 55 without `--skip-trust`. Not run on macOS or Linux; `--sandbox` and `--resume` not run live.
 - `grok-delegate` — macOS, `grok` 0.2.101: streaming-json report capture, file-based brief delivery,
   resume; read-only is best-effort by measurement, hence the violation flag.
   Contributor-run native Windows check with `grok` 1.0.13: a no-edit dispatch using

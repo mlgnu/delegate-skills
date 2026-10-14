@@ -405,6 +405,27 @@ export const IMPLEMENTERS = Object.freeze([
     winShell: false,
 
   },
+  {
+    key: "gemini",
+    skill: "gemini-delegate",
+    binary: "gemini",
+    versionArgs: ["--version"],
+    // No auth-status command; credentials live in files this script must not read.
+    authProbe: null,
+    // No model-listing command.
+    modelProbe: null,
+    // tmp/<project>/chats/session-*.jsonl — one file per session.
+    usageProbe: {
+      homeSubdir: ".gemini",
+      path: ["tmp", "*", "chats"],
+      entry: "file",
+      match: /^session-.*\.jsonl?$/,
+    },
+    // The relay's --sandbox is boolean while lane dials other than readOnly/force are
+    // strings, so sandbox stays a relay flag, not a lane dial.
+    supports: ["model", "timeout", "readOnly"],
+    winShell: true,
+  },
 ]);
 
 /** Prototype-free map so names like "toString" cannot pass as implementers. */
